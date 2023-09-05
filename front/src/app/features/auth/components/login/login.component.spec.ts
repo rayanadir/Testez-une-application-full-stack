@@ -15,7 +15,7 @@ import { LoginComponent } from './login.component';
 import { LoginRequest } from '../../interfaces/loginRequest.interface';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 declare const expect: JestExpect;
 
@@ -109,7 +109,35 @@ describe('LoginComponent', () => {
     });
   
     it("Login fails, invalid fields", () => {
+      const loginReq: LoginRequest = {
+        email: "",
+        password: "",
+      }
+      
+      mockComponent.form.setValue(loginReq);
+      mockAuthService.login.mockReturnValue(throwError(() => new Error("Error : invalid fields !")));
+      
+      mockComponent.submit();
 
+      expect(mockComponent.onError).toBeTruthy();
+      expect(mockSessionService.logIn).not.toHaveBeenCalledWith();
+      expect(mockRouter.navigate).not.toHaveBeenCalledWith();
+    })
+
+    it("Login fails, invalid credentials", () => {
+      const loginReq: LoginRequest = {
+        email: "email@email.com",
+        password: "password",
+      }
+      
+      mockComponent.form.setValue(loginReq);
+      mockAuthService.login.mockReturnValue(throwError(() => new Error("Error : invalid credentials !")));
+      
+      mockComponent.submit();
+
+      expect(mockComponent.onError).toBeTruthy();
+      expect(mockSessionService.logIn).not.toHaveBeenCalledWith();
+      expect(mockRouter.navigate).not.toHaveBeenCalledWith();
     })
 
   })
