@@ -7,20 +7,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { expect } from '@jest/globals';
+//import { expect } from '@jest/globals/build/index';
 import { SessionService } from 'src/app/services/session.service';
+import { JestExpect } from '@jest/expect';
 
 import { LoginComponent } from './login.component';
+import { LoginRequest } from '../../interfaces/loginRequest.interface';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+
+declare const expect: JestExpect;
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  // add login component constructor parameters (mocks)
-  let mockAuthService = jest.fn().mockReturnValue(jest.fn());
-  let mockFormBuilder: FormBuilder = new FormBuilder();
-  let mockRouter = jest.fn();
-  let mockSessionService = jest.fn();
+
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -46,41 +49,68 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("Login successful", () => {
-    // Login request data
-    const loginReq = {
-      email:"yoga@studio.com",
-      password:"test!12345"
-    }
-    
-    // Expected login response data
-    const loginRes = {
-      token:"token",
-      type:"Bearer",
-      id:1,
-      username:"username",
-      firstName:"firstName",
-      lastName:"lastName",
-      admin:true,
+  describe("Login", () => {
+    // Add login component constructor parameters (mocks), object keys are service methods
+    let mockAuthService : any = {
+      login : jest.fn().mockReturnValue({subscribe : jest.fn()}),
     }
 
-    // Input & submit form
-    component.form.setValue(loginReq);
-    component.submit();
+    let mockFormBuilder: FormBuilder = new FormBuilder();
 
-    // Call authService with login request data
-    expect(mockAuthService).toHaveBeenCalledTimes(1);
-    expect(mockAuthService).toHaveBeenCalledWith(loginReq);
+    let mockSessionService : any = {logIn: jest.fn()};
 
-    // Get authService response
-    mockAuthService.mockReturnValue(loginRes);
+    let mockRouter : any = {navigate: jest.fn()};
 
-    // Call sessionService with login response data
-    expect(mockSessionService).toHaveBeenCalledTimes(1);
-    expect(mockSessionService).toHaveBeenCalledWith(loginRes);
+    let mockComponent : LoginComponent = new LoginComponent(
+      mockAuthService as AuthService,
+      mockFormBuilder,
+      mockRouter as Router,
+      mockSessionService as SessionService
+    )
 
-    // Call navigation
-    expect(mockRouter).toHaveBeenCalledTimes(1);
-    expect(mockRouter).toHaveBeenCalledWith(['/sessions']);
+    it("Login successful", () => {
+      // Login request data
+      const loginReq: LoginRequest = {
+        email:"yoga@studio.com",
+        password:"test!12345"
+      }
+      
+      // Expected login response data
+      const loginRes = {
+        token:"token",
+        type:"Bearer",
+        id:1,
+        username:"username",
+        firstName:"firstName",
+        lastName:"lastName",
+        admin:true,
+      }
+  
+      // Input & submit form
+      mockComponent.form.setValue(loginReq);
+      mockComponent.submit();
+  
+      // Call authService with login request data
+      expect(mockAuthService.login).toHaveBeenCalledTimes(1);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginReq);
+  
+      // Get authService response
+      mockAuthService.login.mockReturnValue(of(loginRes));
+  
+      mockComponent.submit();
+
+      // Call sessionService with login response data
+      expect(mockSessionService.logIn).toHaveBeenCalledTimes(1);
+      expect(mockSessionService.logIn).toHaveBeenCalledWith(loginRes);
+  
+      // Call navigation
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
+    });
+  
+    it("Login fails, invalid fields", () => {
+
+    })
+
   })
 });
