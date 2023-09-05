@@ -52,6 +52,7 @@ describe('RegisterComponent', () => {
   });
 
   describe("Register", () => {
+    // Add register component constructor parameters (mocks), object keys are service methods
     let mockAuthService: any = {
       register: jest.fn().mockReturnValue({subscribe:jest.fn()})
     }; 
