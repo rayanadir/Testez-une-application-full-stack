@@ -8,18 +8,24 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //import { describe, expect } from '@jest/globals';
 import { JestExpect } from '@jest/expect';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { RegisterComponent } from './register.component';
 import { describe } from '@jest/globals';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { RegisterRequest } from '../../interfaces/registerRequest.interface';
 
 declare const expect: JestExpect;
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+
+  const checkEmailFormat = (email:string) => {
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email);
+  }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -54,12 +60,40 @@ describe('RegisterComponent', () => {
 
     let mockComponent: RegisterComponent = new RegisterComponent(mockAuthService as AuthService,mockFormBuilder,mockRouter as Router)
     
+    it("Register success", () => {
+      const email: string = "email@email.com";
+      const registerReq: RegisterRequest = {
+        email,
+        firstName: "firstName",
+        lastName: "lastName",
+        password: "password",
+      }
+      mockComponent.form.setValue(registerReq);
+      if(checkEmailFormat(email)){
+        mockAuthService.register.mockReturnValue(of(registerReq));
+
+        mockComponent.submit();
+  
+        expect(mockAuthService.register).toHaveBeenCalledTimes(1);
+        expect(mockAuthService.register).toHaveBeenCalledWith(registerReq);
+  
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+      }else{
+        mockComponent.submit();
+  
+        expect(mockAuthService.register).toHaveBeenCalledTimes(0);
+        expect(mockAuthService.register).toHaveBeenCalledWith(registerReq);
+  
+        expect(mockRouter.navigate).not.toHaveBeenCalledWith(['/login']);    
+      }
+    })
+
     it("Register failed, invalid fields", () => {
-      const registerReq= {
+      const registerReq: RegisterRequest= {
         email:"",
         firstName:"",
         lastName:"",
-        password:""
+        password:"",
       }
       mockComponent.form.setValue(registerReq);
       mockAuthService.register.mockReturnValue(throwError(() => {new Error("Error : invalid fields !")}));
