@@ -16,6 +16,8 @@ import { SessionApiService } from '../../services/session-api.service';
 import { FormComponent } from './form.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeacherService } from 'src/app/services/teacher.service';
+import { Session } from '../../interfaces/session.interface';
+import { of } from 'rxjs';
 
 describe('FormComponent', () => {
   let component: FormComponent;
@@ -88,7 +90,41 @@ describe('FormComponent', () => {
     )
 
     it("Creates session", () => {
+      // Session request data
+      const sessionReq : Session = {
+        id:1,
+        name: 'Name',
+        description: 'Description',
+        date: new Date(),
+        teacher_id: 1,
+        users: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
 
-    })
+      // Input & submit form
+      const form = mockComponent.sessionForm?.setValue(sessionReq);
+      mockComponent.onUpdate = false;
+      mockComponent.submit();
+
+      // Call sessionApiService with session request data
+      expect(mockSessionApiService.create).toHaveBeenCalledTimes(1);
+      expect(mockSessionApiService.create).toHaveBeenCalledWith(form);
+
+      // Mock subscribe
+      mockSessionApiService.create.mockReturnValue(of(
+        mockMatSnackBar.open("Session created !"),
+        mockRouter.navigate(['sessions'])
+      ));
+
+      // Call open
+      expect(mockMatSnackBar.open).toHaveBeenCalledTimes(1);
+      expect(mockMatSnackBar.open).toHaveBeenCalledWith("Session created !");
+
+      // Call navigation
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['sessions']);
+    });
+
   })
 });
