@@ -1,11 +1,6 @@
 /// <reference types="cypress" />
 
 describe('Register spec', () => {
-  
-    const checkEmailFormat = (email:string) => {
-      var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      return re.test(email);
-    }
     
     it('Register successful', () => {
           cy.visit('/register')
@@ -14,7 +9,7 @@ describe('Register spec', () => {
             body: {
               firstName: 'firstName',
               lastName: 'lastName',
-              email: 'email@mail.com',
+              email: 'yoga@studio.com',
               password: 'password'
             },
           })
@@ -32,7 +27,8 @@ describe('Register spec', () => {
           cy.get('input[formControlName=password]').type("password");
   
           cy.get('.register-form > .mat-focus-indicator').should("be.enabled");
-          cy.url().should('include', '/sessions');
+          cy.get('.register-form > .mat-focus-indicator').click()
+          cy.url().should('include', '/login');
   
     })
   
@@ -43,7 +39,7 @@ describe('Register spec', () => {
         body: {
           firstName: 'firstName',
           lastName: 'lastName',
-          email: 'email@mail.com',
+          email: 'yoga@studio.com',
           password: 'password'
         },
       })
@@ -73,7 +69,7 @@ describe('Register spec', () => {
         body: {
           firstName: 'firstName',
           lastName: 'lastName',
-          email: 'email@mail.com',
+          email: 'yoga@studio.com',
           password: 'password'
         },
       })
@@ -102,7 +98,7 @@ describe('Register spec', () => {
         body: {
           firstName: 'firstName',
           lastName: 'lastName',
-          email: 'email@mail.com',
+          email: '',
           password: 'password'
         },
       })
@@ -131,7 +127,7 @@ describe('Register spec', () => {
         body: {
           firstName: 'firstName',
           lastName: 'lastName',
-          email: 'email@mail.com',
+          email: 'yoga@studio.com',
           password: 'password'
         },
       })
@@ -155,12 +151,12 @@ describe('Register spec', () => {
   
     it("Register failed, invalid email format", () => {
       cy.visit('/register')
-  
+      const email : string = "y@";
       cy.intercept('POST', '/api/auth/register', {
         body: {
           firstName: 'firstName',
           lastName: 'lastName',
-          email: 'email@mail.com',
+          email,
           password: 'password'
         },
       })
@@ -172,20 +168,17 @@ describe('Register spec', () => {
         },
         []).as('session')
   
-      const email : string = "y@";
+      
   
       cy.get('input[formControlName=firstName]').type("firstName");
       cy.get('input[formControlName=lastName]').type("lastName");
       cy.get('input[formControlName=email]').type(email);
       cy.get('input[formControlName=password]').type("password");
   
-      if(checkEmailFormat(email)){
-        cy.get('.register-form > .mat-focus-indicator').should("be.enabled");
-        cy.url().should('include', '/sessions');
-      }else{
-        cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-        cy.url().should('not.include', '/sessions');
-      }
+
+      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
+      cy.url().should('not.include', '/sessions');
+      
       
     })
   })
