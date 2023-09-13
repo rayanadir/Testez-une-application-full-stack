@@ -16,11 +16,6 @@ describe("List spec", () => {
                 admin: true
             }
         });
-        cy.get('input[formControlName=email]').type("yoga@studio.com");
-        cy.get('input[formControlName=password]').type(`${"test!12345"}{enter}{enter}`);
-
-        cy.get('.mat-raised-button').should("be.enabled");
-        cy.url().should('include', '/sessions');
 
         const sessions = [
             {
@@ -48,6 +43,12 @@ describe("List spec", () => {
         cy.intercept("GET", '/api/session', {
             body: sessions,
         });
+
+        cy.get('input[formControlName=email]').type("yoga@studio.com");
+        cy.get('input[formControlName=password]').type(`${"test!12345"}{enter}{enter}`);
+
+        cy.get('.mat-raised-button').should("be.enabled");
+        cy.url().should('include', '/sessions');
 
         // Show all sessions informations for admin
         cy.contains("Rentals available").should("be.visible");
