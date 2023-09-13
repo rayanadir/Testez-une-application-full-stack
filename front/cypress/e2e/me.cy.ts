@@ -1,10 +1,6 @@
 /// <reference types="cypress" />
 
-function getMonthName (monthNumber: number) : String {
-    const date = new Date();
-    date.setMonth(monthNumber-1);
-    return date.toLocaleString("en-US", { month : "long"});
-}
+import { getMonthName } from "../services/month";
 
 describe("Me spec", () => {
     it("Shows admin user informations", () => {
