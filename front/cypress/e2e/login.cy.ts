@@ -78,4 +78,29 @@ describe('Login spec', () => {
     cy.url().should("not.include", "/sessions");
   })
 
+  it("Login failed, bad credentials", () => {
+    cy.visit("/login");
+
+    cy.intercept('POST', '/api/auth/login', {
+      body: "An error occurred",
+      statusCode: 400
+    });
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/session',
+      },
+      []).as('session');
+      
+      cy.get('input[formControlName=email]').type("error@email.com");
+      cy.get('input[formControlName=password]').type(`${"error_password"}{enter}{enter}`);
+      
+      cy.get('.mat-raised-button').should("be.enabled");
+    
+      cy.url().should("not.include", "/sessions");
+
+      cy.contains("An error occurred").should("be.visible");
+  })
+
 });
