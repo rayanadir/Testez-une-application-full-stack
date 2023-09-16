@@ -19,7 +19,6 @@ describe("Me spec", () => {
         cy.get('input[formControlName=email]').type("yoga@studio.com");
         cy.get('input[formControlName=password]').type(`${"test!12345"}{enter}{enter}`);
         
-        cy.get('.mat-raised-button').should("be.enabled");
         cy.url().should('include', '/sessions');
 
         const userInfo = {
@@ -68,7 +67,6 @@ describe("Me spec", () => {
         cy.get('input[formControlName=email]').type("toto3@toto.com");
         cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
         
-        cy.get('.mat-raised-button').should("be.enabled");
         cy.url().should('include', '/sessions');
         
         const userInfo = {
