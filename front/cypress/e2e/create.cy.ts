@@ -103,10 +103,11 @@ describe("Create spec", () => {
         cy.intercept("POST", "/api/session", {
             body: session
         });
-        sessions = [...sessions, session],
+        
+        const sessionsList = [...sessions, session]
 
         cy.intercept("GET", '/api/session', {
-            body: sessions,
+            body: sessionsList,
         });
 
         cy.get("button[type=submit]").click();
