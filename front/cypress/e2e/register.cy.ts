@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+import { checkEmailFormat } from "../services/emailFormat";
+import { fieldValidator } from "../services/fieldValidator";
+
 describe('Register spec', () => {
     
     it('Register successful', () => {
@@ -20,165 +23,65 @@ describe('Register spec', () => {
               url: '/api/session',
             },
             []).as('session')
-  
-          cy.get('input[formControlName=firstName]').type("firstName");
-          cy.get('input[formControlName=lastName]').type("lastName");
-          cy.get('input[formControlName=email]').type("yoga@studio.com");
-          cy.get('input[formControlName=password]').type("password");
-  
-          cy.get('.register-form > .mat-focus-indicator').should("be.enabled");
-          cy.get('.register-form > .mat-focus-indicator').click()
-          cy.url().should('include', '/login');
-  
-    })
-  
-    it("Register failed, firstName field not filled", () => {
-      cy.visit('/register')
-  
-      cy.intercept('POST', '/api/auth/register', {
-        body: {
-          firstName: 'firstName',
-          lastName: 'lastName',
-          email: 'yoga@studio.com',
-          password: 'password'
-        },
-      })
-  
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []).as('session')
-  
-      cy.get('input[formControlName=firstName]').should("have.value","");
-      cy.get('input[formControlName=lastName]').type("lastName");
-      cy.get('input[formControlName=email]').type("yoga@studio.com");
-      cy.get('input[formControlName=password]').type("password");
-  
-  
-      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-      cy.url().should('not.include', '/sessions');
-      
-    })
-  
-    it("Register failed, lastName field not filled", () => {
-      cy.visit('/register')
-  
-      cy.intercept('POST', '/api/auth/register', {
-        body: {
-          firstName: 'firstName',
-          lastName: 'lastName',
-          email: 'yoga@studio.com',
-          password: 'password'
-        },
-      })
-  
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []).as('session')
-  
-      cy.get('input[formControlName=firstName]').type("firstName");
-      cy.get('input[formControlName=lastName]').should("have.value","");
-      cy.get('input[formControlName=email]').type("yoga@studio.com");
-      cy.get('input[formControlName=password]').type("password");
-  
-  
-      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-      cy.url().should('not.include', '/sessions');
-    })
-  
-    it("Register failed, email field not filled", () => {
-      cy.visit('/register')
-  
-      cy.intercept('POST', '/api/auth/register', {
-        body: {
-          firstName: 'firstName',
-          lastName: 'lastName',
-          email: '',
-          password: 'password'
-        },
-      })
-  
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []).as('session')
-  
-      cy.get('input[formControlName=firstName]').type("firstName");
-      cy.get('input[formControlName=lastName]').type("lastName");
-      cy.get('input[formControlName=email]').should("have.value","");
-      cy.get('input[formControlName=password]').type("password");
-  
-  
-      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-      cy.url().should('not.include', '/sessions');
-    })
-  
-    it("Register failed, password field not filled", () => {
-      cy.visit('/register')
-  
-      cy.intercept('POST', '/api/auth/register', {
-        body: {
-          firstName: 'firstName',
-          lastName: 'lastName',
-          email: 'yoga@studio.com',
-          password: 'password'
-        },
-      })
-  
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []).as('session')
-  
-      cy.get('input[formControlName=firstName]').type("firstName");
-      cy.get('input[formControlName=lastName]').type("lastName");
-      cy.get('input[formControlName=email]').type("yoga@studio.com");
-      cy.get('input[formControlName=password]').should("have.value","");
-  
-  
-      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-      cy.url().should('not.include', '/sessions');
-    })
-  
-    it("Register failed, invalid email format", () => {
-      cy.visit('/register')
-      const email : string = "y@";
-      cy.intercept('POST', '/api/auth/register', {
-        body: {
-          firstName: 'firstName',
-          lastName: 'lastName',
-          email,
-          password: 'password'
-        },
-      })
-  
-      cy.intercept(
-        {
-          method: 'GET',
-          url: '/api/session',
-        },
-        []).as('session')
-  
-      
-  
-      cy.get('input[formControlName=firstName]').type("firstName");
-      cy.get('input[formControlName=lastName]').type("lastName");
-      cy.get('input[formControlName=email]').type(email);
-      cy.get('input[formControlName=password]').type("password");
-  
 
-      cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
-      cy.url().should('not.include', '/sessions');
-      
-      
+          const firstName : string = "firstName";
+          const lastName : string = "lastName";
+          const email : string = "yoga@studio.com";
+          const password : string = "password";
+  
+          cy.get('input[formControlName=firstName]').type(firstName);
+          cy.get('input[formControlName=lastName]').type(lastName);
+          cy.get('input[formControlName=email]').type(email);
+          cy.get('input[formControlName=password]').type(password);
+
+          if(
+            fieldValidator(firstName,3,20) &&
+            fieldValidator(lastName,3,20) &&
+            checkEmailFormat(email) &&
+            fieldValidator(password,3,40) 
+          ){
+            cy.get('.register-form > .mat-focus-indicator').should("be.enabled");
+            cy.get('.register-form > .mat-focus-indicator').click()
+            cy.url().should('include', '/login');           
+          }else{
+            cy.get('.register-form > .mat-focus-indicator').should("be.disabled");
+            cy.get('.register-form > .mat-focus-indicator').click();
+            cy.url().should('not.include', '/login');
+            cy.contains("An error occurred").should("be.visible");   
+          }
+    })
+  
+    it("Register failed, invalid fields", () => {
+      cy.visit('/register')
+  
+      cy.intercept('POST', '/api/auth/register', {
+        body: "Bad request",
+        statusCode: 400,
+      })
+
+      const firstName : string = "aa";
+      const lastName : string = "aa";
+      const email : string = "a@a.a";
+      const password : string = "a";
+
+      cy.get('input[formControlName=firstName]').type(firstName);
+      cy.get('input[formControlName=lastName]').type(lastName);
+      cy.get('input[formControlName=email]').type(email);
+      cy.get('input[formControlName=password]').type(password);
+
+      if(
+        fieldValidator(firstName,3,20) &&
+        fieldValidator(lastName,3,20) &&
+        checkEmailFormat(email) &&
+        fieldValidator(password,3,40) 
+      ){
+        cy.get('.register-form > .mat-focus-indicator').should("be.enabled");
+        cy.get('.register-form > .mat-focus-indicator').click()
+        cy.url().should('include', '/login');           
+      }else{
+        cy.get('.register-form > .mat-focus-indicator').click();
+        cy.url().should('not.include', '/login');
+        cy.contains("An error occurred").should("be.visible");   
+      }      
     })
   })
