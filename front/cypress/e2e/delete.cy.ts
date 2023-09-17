@@ -82,7 +82,7 @@ describe("Delete spec", () => {
 
         cy.intercept("GET", `/api/session/${session.id}`, session);
         cy.intercept("GET", `/api/teacher/${session.teacher_id}`, teacher);
-        cy.get('[ng-reflect-router-link="detail,1"]').click();
+        cy.contains('Detail').click();
 
         cy.url().should("include", `/sessions/detail/${session.id}`);
 

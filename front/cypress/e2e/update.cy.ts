@@ -68,25 +68,25 @@ describe("Update spec", () => {
         cy.url().should('include', '/sessions');
 
         let session = {
-            id: 2,
-            name: "Session",
-            description: "description",
-            date: "2023-09-12 02:00:00",
-            teacher_id: 2,
+            id: 1,
+            name: "session 1",
+            description: "my description",
+            date: "2012-01-01 01:00:00",
+            teacher_id: 1,
             users: [],
-            createdAt: "2023-09-12 23:13:47",
-            updatedAt: "2023-09-12 23:13:47",
+            createdAt: "2023-09-08 18:45:03",
+            updatedAt: "2023-09-12 23:23:22",
         }
 
         const teacher = teachers.find((teacher) => teacher.id == session.teacher_id);
 
-        cy.intercept("GET", "/api/session/2", session);
+        cy.intercept("GET", "/api/session/1", session);
 
         cy.intercept("GET", `/api/teacher/${session.teacher_id}`, teacher);
 
-        cy.get('[ng-reflect-router-link="update,2"]').click();
+        cy.contains('Edit').click();
 
-        cy.url().should('include', '/sessions/update/2');
+        cy.url().should('include', '/sessions/update/1');
 
         const teacherIndex = 0;
         const selectedTeacher = teachers[teacherIndex];
@@ -124,12 +124,16 @@ describe("Update spec", () => {
             createdAt: session.createdAt,
             updatedAt: new Date().toDateString(),
         }
-        cy.intercept("PUT", "/api/session/2", {
+        cy.intercept("PUT", "/api/session/1", {
             body: session
         });
 
-        let updatedSessions = sessions.filter(session => session.id !== 2);
-        updatedSessions.splice(session.id-1,0,session)
+        let sessionIndex = sessions.findIndex(obj => obj.id==1);
+        const updatedSessions = [
+            ...sessions.slice(0,sessionIndex),
+            session,
+            ...sessions.slice(sessionIndex+1)
+        ]
 
         cy.intercept("GET", '/api/session', {
             body: updatedSessions,
@@ -206,25 +210,25 @@ describe("Update spec", () => {
         cy.url().should('include', '/sessions');
 
         let session = {
-            id: 2,
-            name: "Session",
-            description: "description",
-            date: "2023-09-12 02:00:00",
-            teacher_id: 2,
+            id: 1,
+            name: "session 1",
+            description: "my description",
+            date: "2012-01-01 01:00:00",
+            teacher_id: 1,
             users: [],
-            createdAt: "2023-09-12 23:13:47",
-            updatedAt: "2023-09-12 23:13:47",
+            createdAt: "2023-09-08 18:45:03",
+            updatedAt: "2023-09-12 23:23:22",
         }
 
         const teacher = teachers.find((teacher) => teacher.id == session.teacher_id);
 
-        cy.intercept("GET", "/api/session/2", session);
+        cy.intercept("GET", "/api/session/1", session);
 
         cy.intercept("GET", `/api/teacher/${session.teacher_id}`, teacher);
 
-        cy.get('[ng-reflect-router-link="update,2"]').click();
+        cy.contains('Edit').click();
 
-        cy.url().should('include', '/sessions/update/2');
+        cy.url().should('include', '/sessions/update/1');
 
         // Clear inputs
         cy.get("input[formControlName=name]").clear();

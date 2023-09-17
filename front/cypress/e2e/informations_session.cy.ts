@@ -90,7 +90,7 @@ describe("Information session spec", () => {
             cy.contains("Detail").should("be.visible");
         })        
 
-        cy.get('[ng-reflect-router-link="detail,1"]').click();
+        cy.contains('Detail').click();
 
         cy.url().should("include", "/sessions/detail/1");
 
@@ -212,7 +212,7 @@ describe("Information session spec", () => {
             cy.contains("Detail").should("be.visible");
         })        
 
-        cy.get('[ng-reflect-router-link="detail,1"]').click();
+        cy.contains('Detail').click();
 
         cy.url().should("include", "/sessions/detail/1");
 
