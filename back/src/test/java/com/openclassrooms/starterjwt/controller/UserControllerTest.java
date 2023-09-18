@@ -13,13 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UserControllerTest {
 
     @InjectMocks
-    public UserController userController;
+    private UserController userController;
 
     @Mock
-    public UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Mock
-    public UserService userService;
+    private UserService userService;
 
     @BeforeEach
     public void setUp(){
