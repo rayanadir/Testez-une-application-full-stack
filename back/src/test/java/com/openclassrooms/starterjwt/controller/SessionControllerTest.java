@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class SessionControllerTest {
 
     @InjectMocks
-    SessionController sessionController;
+    private SessionController sessionController;
 
     @Mock
     private SessionMapper sessionMapper;
@@ -22,7 +22,7 @@ public class SessionControllerTest {
     private SessionService sessionService;
 
     @BeforeEach
-    void setUp(){
+    public void setUp(){
         sessionController = new SessionController(sessionService,sessionMapper);
     }
 }
