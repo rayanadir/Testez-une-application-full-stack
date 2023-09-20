@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -26,10 +27,13 @@ public class UserServiceTest {
     @Test
     @DisplayName("delete method")
     void whenUserId_thenDeleteById(){
+        // When id
         Long id = 123456789L;
 
-        // Call methods
-        userRepository.deleteById(id);
+        // Then delete by id , call methods
         userService.delete(id);
+        userRepository.deleteById(id);
+
+        verify(userRepository,times(2)).deleteById(id);
     }
 }
