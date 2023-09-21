@@ -65,4 +65,13 @@ public class SessionServiceTest {
         verify(sessionRepository, times(1)).save(session);
         assertEquals(session,sessionMock);
     }
+
+    @Test
+    @DisplayName("delete session method")
+    void delete(){
+        Long id = 123456789L;
+        sessionService.delete(id);
+        sessionRepository.deleteById(id);
+        verify(sessionRepository, times(2)).deleteById(id);
+    }
 }
