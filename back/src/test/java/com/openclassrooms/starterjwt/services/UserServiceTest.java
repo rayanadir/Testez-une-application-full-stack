@@ -62,8 +62,10 @@ public class UserServiceTest {
     void whenUserIsNull_thenReturnNull(){
         // When id is null
         Long id = null;
-        User user = userRepository.findById(id).orElse(null);
-        assertEquals(user,null);
+        User user = new User();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        User mockUser = userService.findById(id);
+        assertEquals(user,mockUser);
         verify(userRepository, times(1)).findById(id);
     }
 }
