@@ -1,5 +1,6 @@
 package com.openclassrooms.starterjwt.services;
 
+import com.openclassrooms.starterjwt.exception.BadRequestException;
 import com.openclassrooms.starterjwt.exception.NotFoundException;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
@@ -206,5 +207,28 @@ public class SessionServiceTest {
         assertThrows(NotFoundException.class, () -> {throw new NotFoundException();});
         assertEquals(session,null);
         assertEquals(user,null);
+    }
+
+    @Test
+    @DisplayName("participate method, bad request exception")
+    void whenAlreadyParticipate_thenReturnBadRequest(){
+      Long id = 123456789L;
+      Long userId = 1L;
+
+      List<User> users = new ArrayList<>();
+      Session session = new Session();
+      User user = new User();
+
+      session.setUsers(users);
+      user.setId(userId);
+      session.getUsers().add(user);
+
+      when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+      when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+      assertThrows(BadRequestException.class, () -> {sessionService.participate(id,userId);});
+
+      verify(sessionRepository, times(1)).findById(id);
+      verify(userRepository, times(1)).findById(userId);
     }
 }
