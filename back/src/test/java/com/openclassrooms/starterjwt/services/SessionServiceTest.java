@@ -276,4 +276,15 @@ public class SessionServiceTest {
         verify(sessionRepository, times(1)).findById(id);
         verify(sessionRepository, times(2)).save(session);
     }
+
+    @Test
+    @DisplayName("no longer participate method, not found exception")
+    void whenSessionNull_thenReturnNotFound(){
+        Long id = null;
+        Long userId = 4L;
+
+        sessionRepository.findById(id).orElse(null);
+        assertThrows(NotFoundException.class, () -> {sessionService.noLongerParticipate(id,userId);});
+        verify(sessionRepository, times(2)).findById(id);
+    }
 }
