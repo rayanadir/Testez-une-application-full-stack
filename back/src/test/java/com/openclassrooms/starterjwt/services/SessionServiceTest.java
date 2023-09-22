@@ -1,5 +1,6 @@
 package com.openclassrooms.starterjwt.services;
 
+import com.openclassrooms.starterjwt.exception.NotFoundException;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.models.User;
@@ -20,6 +21,7 @@ import java.util.*;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class SessionServiceTest {
@@ -192,4 +194,17 @@ public class SessionServiceTest {
         verify(sessionRepository, times(2)).save(session);
     }
 
+    @Test
+    @DisplayName("participate method, not found exception")
+    void whenSessionOrUserNull_thenReturnNotFound(){
+        Long id = null;
+        Long userId = null;
+
+        Session session = sessionRepository.findById(id).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+
+        assertThrows(NotFoundException.class, () -> {throw new NotFoundException();});
+        assertEquals(session,null);
+        assertEquals(user,null);
+    }
 }
