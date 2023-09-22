@@ -123,4 +123,38 @@ public class SessionServiceTest {
         assertEquals(sessionList.size(),findSessionList.size());
         verify(sessionRepository, times(1)).findAll();
     }
+
+    @Test
+    @DisplayName("getById method")
+    void whenSessionId_thenReturnSession(){
+        Long id = 123456789L;
+        Session session = new Session();
+        when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+        Session sessionMock = sessionService.getById(id);
+        assertEquals(session,sessionMock);
+        verify(sessionRepository,times(1)).findById(id);
+    }
+
+    @Test
+    @DisplayName("getById method null")
+    void whenSessionIdNull_thenReturnNull(){
+        Long id = null;
+        Session session = new Session();
+        when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+        Session sessionMock = sessionService.getById(id);
+        assertEquals(session,sessionMock);
+        verify(sessionRepository,times(1)).findById(id);
+    }
+
+    @Test
+    @DisplayName("update session method")
+    void whenSessionId_thenUpdateSession(){
+        Long id = 123456789L;
+        Session session = new Session();
+        session.setId(id);
+        when(sessionRepository.save(session)).thenReturn(session);
+        Session sessionMock = sessionService.update(id,session);
+        assertEquals(session,sessionMock);
+        verify(sessionRepository, times(1)).save(session);
+    }
 }
