@@ -287,4 +287,28 @@ public class SessionServiceTest {
         assertThrows(NotFoundException.class, () -> {sessionService.noLongerParticipate(id,userId);});
         verify(sessionRepository, times(2)).findById(id);
     }
+
+    @Test
+    @DisplayName("no longer participate, bad request exception")
+    void whenNotAlreadyParticipate_thenReturnBadRequest(){
+        Long id = 123456789L;
+        Long userId = 4L;
+
+        List<User> users = new ArrayList<>();
+        Session session = new Session();
+        User user = new User();
+
+        session.setUsers(users);
+        // Set fake userId in order to cause BadRequestExecption
+        Long fakeUserId = 1L;
+        user.setId(fakeUserId);
+        session.getUsers().add(user);
+
+        when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+
+        assertThrows(BadRequestException.class, () -> {sessionService.noLongerParticipate(id,userId);});
+
+        verify(sessionRepository, times(1)).findById(id);
+
+    }
 }
