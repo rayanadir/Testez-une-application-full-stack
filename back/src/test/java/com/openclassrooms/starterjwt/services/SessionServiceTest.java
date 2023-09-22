@@ -68,10 +68,11 @@ public class SessionServiceTest {
 
     @Test
     @DisplayName("delete session method")
-    void delete(){
+    void whenSessionId_thenDeleteSession(){
         Long id = 123456789L;
         sessionService.delete(id);
         sessionRepository.deleteById(id);
         verify(sessionRepository, times(2)).deleteById(id);
     }
+
 }
