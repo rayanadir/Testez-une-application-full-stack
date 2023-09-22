@@ -231,4 +231,49 @@ public class SessionServiceTest {
       verify(sessionRepository, times(1)).findById(id);
       verify(userRepository, times(1)).findById(userId);
     }
+
+    @Test
+    @DisplayName("no longer participate method")
+    void whenAlreadyParticipate_thenNoLongerParticipate(){
+        Long id = 123456789L;
+        Long userId = 4L;
+
+        User user = new User();
+        user.setId(userId);
+        user.setEmail("toto3@toto.com");
+        user.setFirstName("toto");
+        user.setLastName("toto");
+        user.setPassword("test!1234");
+        user.setAdmin(false);
+        user.setCreatedAt(LocalDateTime.parse("2023-09-12T23:08:17"));
+        user.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:08:18"));
+
+        // Add user to a users list
+        List<User> users = new ArrayList<>();
+        users.add(user);
+
+        Teacher teacher = new Teacher();
+        teacher.setId(12346789L);
+        teacher.setLastName("Lastname");
+        teacher.setFirstName("Firstname");
+        teacher.setCreatedAt(LocalDateTime.now());
+        teacher.setUpdatedAt(LocalDateTime.now());
+
+        Session session = new Session();
+        session.setId(id);
+        session.setName("session 1");
+        session.setDescription("my description");
+        session.setDate(Date.from(Instant.now()));
+        session.setTeacher(teacher);
+        session.setUsers(users);
+        session.setCreatedAt(LocalDateTime.parse("2023-09-08T18:45:03"));
+        session.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:23:22"));
+
+        when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+        sessionRepository.save(session);
+        sessionService.noLongerParticipate(id,userId);
+
+        verify(sessionRepository, times(1)).findById(id);
+        verify(sessionRepository, times(2)).save(session);
+    }
 }
