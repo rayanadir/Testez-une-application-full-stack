@@ -157,4 +157,39 @@ public class SessionServiceTest {
         assertEquals(session,sessionMock);
         verify(sessionRepository, times(1)).save(session);
     }
+
+    @Test
+    @DisplayName("participate method")
+    void whenSessionAndUser_thenParticipateSession(){
+        Long id = 123456789L;
+        Long userId = 4L;
+        List<User> users = new ArrayList<>();
+
+        Session session = new Session();
+        session.setId(id);
+        session.setName("Name");
+        session.setDescription("Description");
+        session.setUsers(users);
+
+        User user = new User();
+        user.setId(userId);
+        user.setEmail("toto3@toto.com");
+        user.setLastName("toto");
+        user.setFirstName("toto");
+        user.setAdmin(false);
+        user.setPassword("test!1234");
+        user.setCreatedAt(LocalDateTime.parse("2023-09-12T23:08:17"));
+        user.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:08:18"));
+
+        when(sessionRepository.findById(id)).thenReturn(Optional.of(session));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        sessionRepository.save(session);
+        sessionService.participate(id,userId);
+
+        verify(sessionRepository, times(1)).findById(id);
+        verify(userRepository, times(1)).findById(userId);
+        verify(sessionRepository, times(2)).save(session);
+    }
+
 }
