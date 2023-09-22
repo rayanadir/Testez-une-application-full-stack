@@ -64,8 +64,8 @@ public class TeacherServiceTest {
         Long id = null;
         Teacher teacher = new Teacher();
         when(teacherRepository.findById(id)).thenReturn(Optional.of(teacher));
-        Teacher mockTeacher = teacherService.findById(id);
-        assertEquals(teacher,mockTeacher);
+        Teacher teacherMock = teacherService.findById(id);
+        assertEquals(teacher,teacherMock);
         verify(teacherRepository, times(1)).findById(id);
     }
 }
