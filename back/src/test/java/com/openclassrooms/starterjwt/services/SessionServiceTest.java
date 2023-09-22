@@ -75,4 +75,52 @@ public class SessionServiceTest {
         verify(sessionRepository, times(2)).deleteById(id);
     }
 
+    @Test
+    @DisplayName("findAll method")
+    void whenSessionList_thenReturnSessionList(){
+        // Mock user
+        User user = new User();
+        user.setId(4L);
+        user.setEmail("toto3@toto.com");
+        user.setFirstName("toto");
+        user.setLastName("toto");
+        user.setPassword("test!1234");
+        user.setAdmin(false);
+        user.setCreatedAt(LocalDateTime.parse("2023-09-12T23:08:17"));
+        user.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:08:18"));
+
+        // Mock users list
+        List<User> users = Arrays.asList(user);
+
+        // Mock teacher
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setFirstName("Margot");
+        teacher.setLastName("DELAHAYE");
+        teacher.setCreatedAt(LocalDateTime.parse("2023-08-29T18:57:01"));
+        teacher.setUpdatedAt(LocalDateTime.parse("2023-08-29T18:57:01"));
+
+        // Mock session
+        Session session = new Session();
+        session.setId(1L);
+        session.setName("session 1");
+        session.setDescription("my description");
+        session.setDate(Date.from(Instant.now()));
+        session.setTeacher(teacher);
+        session.setUsers(users);
+        session.setCreatedAt(LocalDateTime.parse("2023-09-08T18:45:03"));
+        session.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:23:22"));
+
+        // Mock session list
+        List<Session> sessionList = Arrays.asList(session);
+
+        when(sessionRepository.findAll()).thenReturn(sessionList);
+
+        List<Session> findSessionList = sessionService.findAll();
+        // Check if elements are identical
+        assertEquals(sessionList,findSessionList);
+        // Check if sessions list size are equal
+        assertEquals(sessionList.size(),findSessionList.size());
+        verify(sessionRepository, times(1)).findAll();
+    }
 }
