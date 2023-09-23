@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,5 +64,12 @@ public class UserDetailsServiceImplTest {
         verify(userRepository, times(1)).findByEmail(username);
     }
 
-
+    @Test
+    @DisplayName("loadUserByUsername method, UsernameNotFoundException")
+    void whenUsernameNotFound_thenReturnException(){
+        String wrong_username = "error@mail.com";
+        when(userRepository.findByEmail(wrong_username)).thenThrow(UsernameNotFoundException.class);
+        assertThrows(UsernameNotFoundException.class, () -> {userDetailsServiceImpl.loadUserByUsername(wrong_username);});
+        verify(userRepository, times(1)).findByEmail(wrong_username);
+    }
 }
