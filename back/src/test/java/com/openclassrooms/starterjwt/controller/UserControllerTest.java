@@ -66,4 +66,14 @@ public class UserControllerTest {
         assertEquals(findById,responseEntityNotFound);
         verify(userService, times(1)).findById(Long.parseLong(id));
     }
+
+    @Test
+    @DisplayName("findById method, return response entity bad request")
+    void whenIdInvalidFormat_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+        assertThrows(NumberFormatException.class, () -> {Long.valueOf(id);});
+        ResponseEntity<?> findById = userController.findById(id);
+        ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
+        assertEquals(findById,badRequestResponse);
+    }
 }
