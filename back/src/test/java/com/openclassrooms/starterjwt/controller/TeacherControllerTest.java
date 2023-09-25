@@ -47,4 +47,15 @@ public class TeacherControllerTest {
         assertEquals(findById,responseEntity);
         verify(teacherMapper, times(1)).toDto(teacher);
     }
+
+    @Test
+    @DisplayName("findById method, return response entity not found")
+    void whenTeacherNull_thenReturnResponseEntityNotFound(){
+        String id = "1";
+        Teacher teacher = null;
+        when(teacherService.findById(Long.valueOf(id))).thenReturn(teacher);
+        ResponseEntity<?> findById = teacherController.findById(id);
+        ResponseEntity<?> notFoundResponse = ResponseEntity.notFound().build();
+        assertEquals(findById,notFoundResponse);
+    }
 }
