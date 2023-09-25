@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,5 +57,15 @@ public class TeacherControllerTest {
         ResponseEntity<?> findById = teacherController.findById(id);
         ResponseEntity<?> notFoundResponse = ResponseEntity.notFound().build();
         assertEquals(findById,notFoundResponse);
+    }
+
+    @Test
+    @DisplayName("findById method, return response entity bad request")
+    void whenIdInvalidFormat_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+        assertThrows(NumberFormatException.class, () -> {Long.valueOf(id);});
+        ResponseEntity<?> findById = teacherController.findById(id);
+        ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
+        assertEquals(findById,badRequestResponse);
     }
 }
