@@ -14,6 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -67,5 +70,21 @@ public class TeacherControllerTest {
         ResponseEntity<?> findById = teacherController.findById(id);
         ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
         assertEquals(findById,badRequestResponse);
+    }
+
+    @Test
+    @DisplayName("findAll method, return response entity ok")
+    void whenTeacherList_thenReturnResponseEntityOK(){
+        List<Teacher> teacherList = new ArrayList<>();
+        List<TeacherDto> teacherDtoList = new ArrayList<>();
+
+        when(teacherService.findAll()).thenReturn(teacherList);
+        when(teacherMapper.toDto(teacherList)).thenReturn(teacherDtoList);
+
+        ResponseEntity<?> findAll = teacherController.findAll();
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok().body(teacherDtoList);
+
+        assertEquals(findAll,responseEntityOK);
+        verify(teacherMapper, times(1)).toDto(teacherList);
     }
 }
