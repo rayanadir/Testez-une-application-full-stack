@@ -51,4 +51,19 @@ public class UserControllerTest {
         verify(userService, times(1)).findById(Long.parseLong(id));
         verify(userMapper, times(1)).toDto(user);
     }
+
+    @Test
+    @DisplayName("findById method, return response entity not found")
+    void whenUserNull_thenReturnResponseEntityNotFound(){
+        String id = "4";
+        User user = null;
+
+        when(userService.findById(Long.parseLong(id))).thenReturn(user);
+
+        ResponseEntity<?> findById = userController.findById(id);
+        ResponseEntity<?> responseEntityNotFound = ResponseEntity.notFound().build();
+
+        assertEquals(findById,responseEntityNotFound);
+        verify(userService, times(1)).findById(Long.parseLong(id));
+    }
 }
