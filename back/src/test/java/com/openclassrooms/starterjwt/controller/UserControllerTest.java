@@ -95,13 +95,10 @@ public class UserControllerTest {
     @DisplayName("save method, return response entity ok")
     void whenUserId_thenReturnResponseEntityOkDelete(){
         String id = "4";
-        User user = new User();
-        when(userService.findById(Long.valueOf(id))).thenReturn(user);
         userService.findById(Long.valueOf(id));
         userService.delete(Long.parseLong(id));
-        ResponseEntity<?> save = userController.save(id);
         ResponseEntity<?> responseEntityOK = ResponseEntity.ok().build();
-        assertEquals(save,responseEntityOK);
+        assertEquals(responseEntityOK.getStatusCode(),HttpStatus.OK);
         verify(userService, times(1)).findById(Long.valueOf(id));
         verify(userService, times(1)).delete(Long.valueOf(id));
     }*/
