@@ -65,7 +65,7 @@ public class AuthControllerTest {
     @DisplayName("authenticateUser method, return JWT response")
     void whenUserAuthenticated_thenReturnJwtResponse(){
         LoginRequest loginRequest = new LoginRequest();
-        String email = "toto3toto.com";
+        String email = "toto3@toto.com";
         String password = "test!1234";
 
         loginRequest.setEmail(email);
@@ -113,5 +113,35 @@ public class AuthControllerTest {
         verify(userRepository, times(1)).findByEmail(userDetails.getUsername());
     }
 
+    @Test
+    @DisplayName("authenticateUser method, bad credentials")
+    void whenBadCredentials_thenNoAuthentication(){
+        LoginRequest loginRequest = new LoginRequest();
+        String email = "error@email.com";
+        String password = "test!1234";
 
+        loginRequest.setEmail(email);
+        loginRequest.setPassword(password);
+
+        String token = "error_token";
+        UserDetailsImpl userDetails = UserDetailsImpl.builder()
+                .username(email)
+                .password(password)
+                .build();
+
+        when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password))).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        securityContext.setAuthentication(authentication);
+
+        when(jwtUtils.generateJwtToken(authentication)).thenReturn(token);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+
+        authController.authenticateUser(loginRequest);
+
+        assertEquals(user, null);
+        verify(authenticationManager, times(1)).authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        verify(jwtUtils, times(1)).generateJwtToken(authentication);
+        verify(userRepository, times(2)).findByEmail(email);
+    }
 }
