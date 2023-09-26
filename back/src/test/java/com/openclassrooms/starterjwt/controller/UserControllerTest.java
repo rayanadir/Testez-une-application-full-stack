@@ -146,4 +146,14 @@ public class UserControllerTest {
         ResponseEntity<?> save = userController.save(id);
         assertEquals(save.getStatusCode(),HttpStatus.UNAUTHORIZED);
     }
+
+    @Test
+    @DisplayName("save method, return response entity bad request")
+    void whenIdInvalidFormat_thenReturnResponseEntityBadRequestSave(){
+        String id = "invalid_id";
+        assertThrows(NumberFormatException.class, () -> { Long.valueOf(id); });
+        ResponseEntity<?> save = userController.save(id);
+        ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
+        assertEquals(save,badRequestResponse);
+    }
 }
