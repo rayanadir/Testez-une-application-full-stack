@@ -4,6 +4,7 @@ import com.openclassrooms.starterjwt.controllers.UserController;
 import com.openclassrooms.starterjwt.dto.UserDto;
 import com.openclassrooms.starterjwt.mapper.UserMapper;
 import com.openclassrooms.starterjwt.models.User;
+import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import com.openclassrooms.starterjwt.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,6 +37,12 @@ public class UserControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    SecurityContext securityContext;
+
+    @Mock
+    Authentication authentication;
+
     @BeforeEach
     public void setUp(){
         userController = new UserController(userService,userMapper);
@@ -36,7 +50,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("findById method, return response entity ok")
-    void whenUserId_thenReturnResponseEntityOK(){
+    void whenUserId_thenReturnResponseEntityOkFind(){
         String id = "4";
         User user = new User();
         UserDto userDto = new UserDto();
@@ -75,5 +89,61 @@ public class UserControllerTest {
         ResponseEntity<?> findById = userController.findById(id);
         ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
         assertEquals(findById,badRequestResponse);
+    }
+
+    /*@Test
+    @DisplayName("save method, return response entity ok")
+    void whenUserId_thenReturnResponseEntityOkDelete(){
+        String id = "4";
+        User user = new User();
+        when(userService.findById(Long.valueOf(id))).thenReturn(user);
+        userService.findById(Long.valueOf(id));
+        userService.delete(Long.parseLong(id));
+        ResponseEntity<?> save = userController.save(id);
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok().build();
+        assertEquals(save,responseEntityOK);
+        verify(userService, times(1)).findById(Long.valueOf(id));
+        verify(userService, times(1)).delete(Long.valueOf(id));
+    }*/
+
+    @Test
+    @DisplayName("save method, return response entity not found")
+    void whenUserNull_thenReturnResponseEntityNotFoundDelete(){
+        String id = "4";
+        User user = null;
+
+        when(userService.findById(Long.valueOf(id))).thenReturn(user);
+
+        ResponseEntity<?> save = userController.save(id);
+        ResponseEntity<?> responseEntityNotFound = ResponseEntity.notFound().build();
+
+        assertEquals(save, responseEntityNotFound);
+        verify(userService, times(1)).findById(Long.valueOf(id));
+    }
+
+    @Test
+    @DisplayName("save method, return response entity unauthorized")
+    void whenIncorrectUserDetails_thenReturnResponseEntityUnauthorized(){
+        String id = "4";
+        User user = new User();
+        user.setId(Long.valueOf(id));
+        user.setEmail("toto3@toto.com");
+        user.setPassword("test!1234");
+        user.setFirstName("toto");
+        user.setLastName("toto");
+        user.setAdmin(false);
+        user.setCreatedAt(LocalDateTime.parse("2023-09-12T23:08:17"));
+        user.setUpdatedAt(LocalDateTime.parse("2023-09-12T23:08:18"));
+
+        when(userService.findById(Long.valueOf(id))).thenReturn(user);
+
+        // Different email to cause unauthorized response
+        UserDetails userDetails = UserDetailsImpl.builder().username("different@email.com").build();
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+
+        ResponseEntity<?> save = userController.save(id);
+        assertEquals(save.getStatusCode(),HttpStatus.UNAUTHORIZED);
     }
 }
