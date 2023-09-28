@@ -3,7 +3,9 @@ package com.openclassrooms.starterjwt.controller;
 import com.openclassrooms.starterjwt.controllers.AuthController;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.payload.request.LoginRequest;
+import com.openclassrooms.starterjwt.payload.request.SignupRequest;
 import com.openclassrooms.starterjwt.payload.response.JwtResponse;
+import com.openclassrooms.starterjwt.payload.response.MessageResponse;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import com.openclassrooms.starterjwt.security.jwt.JwtUtils;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
@@ -143,5 +145,32 @@ public class AuthControllerTest {
         verify(authenticationManager, times(1)).authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         verify(jwtUtils, times(1)).generateJwtToken(authentication);
         verify(userRepository, times(2)).findByEmail(email);
+    }
+
+    @Test
+    @DisplayName("registerUser method, return response entity ok")
+    void whenValidSignUpRequest_thenReturnResponseEntityOK(){
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setEmail("email@test.com");
+        signupRequest.setFirstName("firstName");
+        signupRequest.setLastName("lastName");
+        signupRequest.setPassword("password");
+
+        User user = new User();
+        user.setEmail(signupRequest.getEmail());
+        user.setFirstName(signupRequest.getFirstName());
+        user.setLastName(signupRequest.getLastName());
+        user.setPassword(signupRequest.getPassword());
+        user.setAdmin(false);
+
+        when(passwordEncoder.encode(signupRequest.getPassword())).thenReturn(user.getPassword());
+        when(userRepository.save(user)).thenReturn(user);
+
+        MessageResponse messageResponse = new MessageResponse("User registered successfully!");
+        ResponseEntity<?> responseEntity = ResponseEntity.ok(messageResponse);
+        ResponseEntity<?> registerUser = authController.registerUser(signupRequest);
+        assertEquals(registerUser.getStatusCode(), responseEntity.getStatusCode());
+        verify(passwordEncoder, times(1)).encode(user.getPassword());
+        verify(userRepository, times(1)).save(user);
     }
 }
