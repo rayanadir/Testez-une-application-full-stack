@@ -105,4 +105,19 @@ public class SessionControllerTest {
 
         assertEquals(create, responseEntityOK);
     }
+
+    @Test
+    @DisplayName("update method, return response entity OK")
+    void whenSessionIdAndSessionDtoValid_thenReturnResponseEntityOK(){
+        String id = "1";
+        Session session = new Session();
+        SessionDto sessionDto = new SessionDto();
+
+        when(sessionService.update(Long.parseLong(id), sessionMapper.toEntity(sessionDto))).thenReturn(session);
+
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok().body(sessionMapper.toDto(session));
+        ResponseEntity<?> update = sessionController.update(id,sessionDto);
+
+        assertEquals(update, responseEntityOK);
+    }
 }
