@@ -160,4 +160,13 @@ public class SessionControllerTest {
         assertEquals(save, responseEntityNotFound);
     }
 
+    @Test
+    @DisplayName("save method, return bad request response entity")
+    void whenSessionIdInvalid_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+        assertThrows(NumberFormatException.class, () -> {Long.valueOf(id);});
+        ResponseEntity<?> save = sessionController.save(id);
+        ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
+        assertEquals(save,responseEntityBadRequest);
+    }
 }
