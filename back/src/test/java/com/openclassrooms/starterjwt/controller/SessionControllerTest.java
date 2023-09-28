@@ -205,5 +205,16 @@ public class SessionControllerTest {
         verify(sessionService, times(2)).noLongerParticipate(Long.parseLong(id), Long.parseLong(userId));
     }
 
+    @Test
+    @DisplayName("participate method, return response entity bad request")
+    void whenIdAndUserIdInvalid_thenReturnResponseEntityBadRequestNoParticipate(){
+        String id = "invalid_id";
+        String userId = "invalid_userId";
 
+        assertThrows(NumberFormatException.class, () -> {Long.valueOf(id);});
+
+        ResponseEntity<?> noLongerParticipate = sessionController.noLongerParticipate(id, userId);
+        ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
+        assertEquals(noLongerParticipate,responseEntityBadRequest);
+    }
 }
