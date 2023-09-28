@@ -180,4 +180,17 @@ public class SessionControllerTest {
         assertEquals(sessionController.participate(id,userId), ResponseEntity.ok().build());
         verify(sessionService, times(2)).participate(Long.parseLong(id), Long.parseLong(userId));
     }
+
+    @Test
+    @DisplayName("participate method, return response entity bad request")
+    void whenIdAndUserIdInvalid_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+        String userId = "invalid_userId";
+
+        assertThrows(NumberFormatException.class, () -> {Long.valueOf(id);});
+
+        ResponseEntity<?> participate = sessionController.participate(id, userId);
+        ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
+        assertEquals(participate,responseEntityBadRequest);
+    }
 }
