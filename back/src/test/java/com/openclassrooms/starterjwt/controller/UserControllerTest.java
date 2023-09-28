@@ -91,17 +91,29 @@ public class UserControllerTest {
         assertEquals(findById,badRequestResponse);
     }
 
-    /*@Test
+    @Test
     @DisplayName("save method, return response entity ok")
     void whenUserId_thenReturnResponseEntityOkDelete(){
         String id = "4";
-        userService.findById(Long.valueOf(id));
+        User user = new User();
+        user.setId(Long.valueOf(id));
+        user.setEmail("toto3@toto.com");
+
+        when(userService.findById(Long.valueOf(id))).thenReturn(user);
+
+        UserDetails userDetails = UserDetailsImpl.builder().username(user.getEmail()).build();
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+
+        //userService.findById(Long.valueOf(id));
         userService.delete(Long.parseLong(id));
+        ResponseEntity<?> save = userController.save(id);
         ResponseEntity<?> responseEntityOK = ResponseEntity.ok().build();
-        assertEquals(responseEntityOK.getStatusCode(),HttpStatus.OK);
+        assertEquals(save,responseEntityOK);
         verify(userService, times(1)).findById(Long.valueOf(id));
-        verify(userService, times(1)).delete(Long.valueOf(id));
-    }*/
+        verify(userService, times(2)).delete(Long.valueOf(id));
+    }
 
     @Test
     @DisplayName("save method, return response entity not found")
