@@ -120,4 +120,16 @@ public class SessionControllerTest {
 
         assertEquals(update, responseEntityOK);
     }
+
+    @Test
+    @DisplayName("update method, return bad request")
+    void whenInvalidId_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+        SessionDto sessionDto = new SessionDto();
+
+        assertThrows(NumberFormatException.class, () -> { Long.valueOf(id);});
+        ResponseEntity<?> update = sessionController.update(id, sessionDto);
+        ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
+        assertEquals(update, responseEntityBadRequest);
+    }
 }
