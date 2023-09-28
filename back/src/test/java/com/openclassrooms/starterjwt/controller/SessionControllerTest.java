@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,5 +62,16 @@ public class SessionControllerTest {
         when(sessionService.getById(Long.valueOf(id))).thenReturn(session);
         ResponseEntity<?> findById = sessionController.findById(id);
         assertEquals(findById.getStatusCode(),  HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("findById method, return response entity bad request")
+    void whenNumberFormatException_thenReturnResponseEntityBadRequest(){
+        String id = "invalid_id";
+
+        assertThrows(NumberFormatException.class, () -> { Long.valueOf(id); });
+        ResponseEntity<?> findById = sessionController.findById(id);
+        ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
+        assertEquals(findById, badRequestResponse);
     }
 }
