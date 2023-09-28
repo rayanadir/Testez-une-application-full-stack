@@ -15,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -73,5 +76,18 @@ public class SessionControllerTest {
         ResponseEntity<?> findById = sessionController.findById(id);
         ResponseEntity<?> badRequestResponse = ResponseEntity.badRequest().build();
         assertEquals(findById, badRequestResponse);
+    }
+
+    @Test
+    @DisplayName("findAll method, return response entity OK")
+    void whenSessionList_thenReturnResponseEntityOK(){
+        List<Session> sessions = new ArrayList<>();
+        when(sessionService.findAll()).thenReturn(sessions);
+        List<SessionDto> sessionDto = sessionMapper.toDto(sessions);
+
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok(sessionDto);
+        ResponseEntity<?> findAll = sessionController.findAll();
+
+        assertEquals(findAll, responseEntityOK);
     }
 }
