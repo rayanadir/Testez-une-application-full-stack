@@ -90,4 +90,19 @@ public class SessionControllerTest {
 
         assertEquals(findAll, responseEntityOK);
     }
+
+    @Test
+    @DisplayName("create method, return response entity OK")
+    void whenSessionDTO_thenReturnResponseEntityOK(){
+        Session session = new Session();
+        SessionDto sessionDto = new SessionDto();
+
+        when(sessionMapper.toEntity(sessionDto)).thenReturn(session);
+        when(sessionService.create(session)).thenReturn(session);
+
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok().body(sessionMapper.toDto(session));
+        ResponseEntity<?> create = sessionController.create(sessionDto);
+
+        assertEquals(create, responseEntityOK);
+    }
 }
