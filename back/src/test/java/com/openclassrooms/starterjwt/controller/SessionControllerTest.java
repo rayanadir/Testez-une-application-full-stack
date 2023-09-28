@@ -146,6 +146,18 @@ public class SessionControllerTest {
         verify(sessionService, times(2)).delete(Long.valueOf(id));
     }
 
+    @Test
+    @DisplayName("save method, return not found response entity")
+    void whenSessionNull_thenReturnResponseEntityNotFound(){
+        String id = "0";
+        Session session = null;
 
+        when(sessionService.getById(Long.valueOf(id))).thenReturn(session);
+
+        ResponseEntity<?> responseEntityNotFound = ResponseEntity.notFound().build();
+        ResponseEntity<?> save = sessionController.save(id);
+
+        assertEquals(save, responseEntityNotFound);
+    }
 
 }
