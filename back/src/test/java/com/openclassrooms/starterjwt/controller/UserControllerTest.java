@@ -106,7 +106,6 @@ public class UserControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(userDetails);
 
-        //userService.findById(Long.valueOf(id));
         userService.delete(Long.parseLong(id));
         ResponseEntity<?> save = userController.save(id);
         ResponseEntity<?> responseEntityOK = ResponseEntity.ok().build();
