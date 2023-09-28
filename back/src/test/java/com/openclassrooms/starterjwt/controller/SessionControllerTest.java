@@ -132,4 +132,20 @@ public class SessionControllerTest {
         ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
         assertEquals(update, responseEntityBadRequest);
     }
+
+    @Test
+    @DisplayName("save method, return response entity bad request")
+    void whenSessionId_thenReturnResponseEntityOK(){
+        String id = "1";
+        Session session = new Session();
+        when(sessionService.getById(Long.valueOf(id))).thenReturn(session);
+        sessionService.delete(Long.valueOf(id));
+        ResponseEntity<?> save = sessionController.save(id);
+        ResponseEntity<?> responseEntityOK = ResponseEntity.ok().build();
+        assertEquals(save, responseEntityOK);
+        verify(sessionService, times(2)).delete(Long.valueOf(id));
+    }
+
+
+
 }
