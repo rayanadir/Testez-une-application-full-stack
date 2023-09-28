@@ -51,4 +51,15 @@ public class SessionControllerTest {
         assertEquals(findById.getStatusCode(), HttpStatus.OK);
         assertEquals(findById, responseEntityOK);
     }
+
+    @Test
+    @DisplayName("findById method, return not found response entity")
+    void whenSessionNull_thenResponseEntityNotFound(){
+        String id = "0";
+        Session session = null;
+
+        when(sessionService.getById(Long.valueOf(id))).thenReturn(session);
+        ResponseEntity<?> findById = sessionController.findById(id);
+        assertEquals(findById.getStatusCode(),  HttpStatus.NOT_FOUND);
+    }
 }
