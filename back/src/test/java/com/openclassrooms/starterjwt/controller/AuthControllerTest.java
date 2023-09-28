@@ -173,4 +173,19 @@ public class AuthControllerTest {
         verify(passwordEncoder, times(1)).encode(user.getPassword());
         verify(userRepository, times(1)).save(user);
     }
+
+    @Test
+    @DisplayName("registerUser method, return bad request")
+    void whenEmailAlreadyExists_thenReturnBadRequest(){
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setEmail("existing@email.com");
+        when(userRepository.existsByEmail(signupRequest.getEmail())).thenReturn(true);
+
+        MessageResponse messageResponse = new MessageResponse("Error: Email is already taken!");
+        ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().body(messageResponse);
+        ResponseEntity<?> registerUser = authController.registerUser(signupRequest);
+
+        assertEquals(registerUser.getStatusCode(), responseEntityBadRequest.getStatusCode());
+        verify(userRepository, times(1)).existsByEmail(signupRequest.getEmail());
+    }
 }
