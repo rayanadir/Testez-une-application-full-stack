@@ -169,4 +169,15 @@ public class SessionControllerTest {
         ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
         assertEquals(save,responseEntityBadRequest);
     }
+
+    @Test
+    @DisplayName("participate method, return response entity OK")
+    void whenIdAndUserId_thenReturnResponseEntityOK(){
+        String id = "1";
+        String userId = "1";
+
+        sessionService.participate(Long.parseLong(id), Long.parseLong(userId));
+        assertEquals(sessionController.participate(id,userId), ResponseEntity.ok().build());
+        verify(sessionService, times(2)).participate(Long.parseLong(id), Long.parseLong(userId));
+    }
 }
