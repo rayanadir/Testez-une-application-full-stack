@@ -172,7 +172,7 @@ public class SessionControllerTest {
 
     @Test
     @DisplayName("participate method, return response entity OK")
-    void whenIdAndUserId_thenReturnResponseEntityOK(){
+    void whenIdAndUserId_thenReturnResponseEntityOKParticipate(){
         String id = "1";
         String userId = "1";
 
@@ -193,4 +193,17 @@ public class SessionControllerTest {
         ResponseEntity<?> responseEntityBadRequest = ResponseEntity.badRequest().build();
         assertEquals(participate,responseEntityBadRequest);
     }
+
+    @Test
+    @DisplayName("noLongerParticipate method, return response entity OK")
+    void whenIdAndUserId_thenReturnResponseEntityOKNoParticipate(){
+        String id = "1";
+        String userId = "1";
+
+        sessionService.noLongerParticipate(Long.parseLong(id), Long.parseLong(userId));
+        assertEquals(sessionController.noLongerParticipate(id,userId), ResponseEntity.ok().build());
+        verify(sessionService, times(2)).noLongerParticipate(Long.parseLong(id), Long.parseLong(userId));
+    }
+
+
 }
