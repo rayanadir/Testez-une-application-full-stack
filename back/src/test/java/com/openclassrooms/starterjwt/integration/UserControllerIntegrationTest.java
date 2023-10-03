@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -53,10 +54,11 @@ public class UserControllerIntegrationTest {
         this.mockMvc
                 .perform(
                         MockMvcRequestBuilders
-                                .get("/api/user/")
-                                .param("id","1")
+                                .get("/api/user/{id}", "1")
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Admin"))
+                .andReturn();
     }
 }
