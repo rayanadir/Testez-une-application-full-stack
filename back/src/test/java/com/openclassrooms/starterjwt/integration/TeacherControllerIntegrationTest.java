@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -51,17 +52,17 @@ public class TeacherControllerIntegrationTest {
         String token = jwtUtils.generateJwtToken(authentication);
         this.mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/teacher/")
-                        .param("id","1")
+                        .get("/api/teacher/{id}", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("DELAHAYE"))
                 .andReturn();
     }
 
-    /*@Test
-    @DisplayName("findById method, response entity ok")
-    void testFindAll_responseEntityOK() throws Exception{
+    @Test
+    @DisplayName("findById method, response entity not found")
+    void testFindById_responseEntityNotFound() throws Exception{
         String email = "email@email.com";
         String password = "password";
         Authentication authentication = authenticationManager.authenticate(
@@ -70,10 +71,10 @@ public class TeacherControllerIntegrationTest {
         String token = jwtUtils.generateJwtToken(authentication);
         this.mockMvc.perform(
                         MockMvcRequestBuilders
-                                .get("/api/teacher/")
+                                .get("/api/teacher/{id}", "3")
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
                 .andReturn();
-    }*/
+    }
 }
