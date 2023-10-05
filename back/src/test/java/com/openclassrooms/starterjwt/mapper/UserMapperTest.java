@@ -18,7 +18,7 @@ public class UserMapperTest {
     private User userEntity;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         userEntity = new User();
         userEntity.setId(6L);
         userEntity.setEmail("email@test.com");
@@ -42,5 +42,12 @@ public class UserMapperTest {
 
         assertNotNull(user);
         assertEquals(userDto.getId(),user.getId());
+    }
+
+    @Test
+    void userEntityToDTO(){
+        UserDto userDto = userMapper.toDto(userEntity);
+        assertNotNull(userDto);
+        assertEquals(userEntity.getId(),userDto.getId());
     }
 }
