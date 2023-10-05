@@ -26,4 +26,17 @@ public class TeacherMapperTest {
         assertNotNull(teacher);
         assertEquals(teacherDto.getId(),teacher.getId());
     }
+
+    @Test
+    void teacherEntityToTeacherDto(){
+        Teacher teacher = new Teacher();
+        teacher.setId(3L);
+        teacher.setFirstName("firstname");
+        teacher.setLastName("lastname");
+
+        TeacherDto teacherDto = teacherMapper.toDto(teacher);
+
+        assertNotNull(teacherDto);
+        assertEquals(teacherDto.getId(),teacher.getId());
+    }
 }
