@@ -37,4 +37,24 @@ public class SessionMapperTest {
         assertNotNull(session);
         assertEquals(sessionDto.getId(),session.getId());
     }
+
+    @Test
+    void sessionToSessionDto(){
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+
+        User user = new User();
+        user.setId(1L);
+
+        Session session = new Session();
+        session.setId(1L);
+        session.setDescription("description");
+        session.setTeacher(teacher);
+        session.setUsers(Arrays.asList(user));
+
+        SessionDto sessionDto = sessionMapper.toDto(session);
+
+        assertNotNull(sessionDto);
+        assertEquals(session.getId(), sessionDto.getId());
+    }
 }
