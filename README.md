@@ -75,8 +75,10 @@ for following change:
 ### BACK-END Test
 
 #### Unitary test
-To launch and generate the jacoco code coverage:
+To launch the jacoco test:
 > mvn clean test
+
+To generate the jacoco report code coverage: 
 > mvn jacoco report
 
 #### Integration test
