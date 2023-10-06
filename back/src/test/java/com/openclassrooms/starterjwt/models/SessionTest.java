@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class SessionTest {
 
     @Test
-    void test(){
+    void testSessionEntity(){
         Session session = new Session();
         session.equals(new Session());
         session.hashCode();
@@ -16,7 +16,7 @@ public class SessionTest {
     }
 
     @Test
-    void testAll(){
+    void testSessionEntityBuilder(){
         Session session = new Session();
         session.equals(Session.builder().build());
         assertNotNull(session.toString());

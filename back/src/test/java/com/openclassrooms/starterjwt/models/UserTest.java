@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UserTest {
 
     @Test
-    void test() {
+    void testUserEntity() {
         User user = new User();
         user.equals(new User());
         user.hashCode();
@@ -20,7 +20,7 @@ public class UserTest {
     }
 
     @Test
-    void testAll() {
+    void testUserEntityBuilder() {
         User user = new User();
         user.equals(User.builder()
                 .email("email@email.com")
