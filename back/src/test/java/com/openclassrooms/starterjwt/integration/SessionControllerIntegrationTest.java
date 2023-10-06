@@ -1,6 +1,5 @@
 package com.openclassrooms.starterjwt.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.security.jwt.JwtUtils;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.DisplayName;
@@ -37,8 +36,6 @@ public class SessionControllerIntegrationTest {
     @Autowired
     private JwtUtils jwtUtils;
 
-    ObjectMapper om = new ObjectMapper();
-
     @Before("")
     public void setUp(){
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -64,15 +61,4 @@ public class SessionControllerIntegrationTest {
                 .andReturn();
     }
 
-    /*@Test
-    @DisplayName("findAll method, response entity ok")
-    public void testFindAll_responseEntityOK() throws Exception {
-        String email = "email@email.com";
-        String password = "password";
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email,password));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtils.generateJwtToken(authentication);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/session").header(HttpHeaders.AUTHORIZATION, "Bearer " + token).contentType(APPLICATION_JSON)).andExpect(status().isOk());
-    }*/
 }

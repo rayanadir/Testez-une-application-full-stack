@@ -1,6 +1,5 @@
 package com.openclassrooms.starterjwt.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.security.jwt.JwtUtils;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.DisplayName;

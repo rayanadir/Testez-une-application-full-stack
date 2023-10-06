@@ -28,7 +28,7 @@ public class AuthControllerIntegrationTest {
     @Autowired
     private WebApplicationContext context;
 
-    ObjectMapper om = new ObjectMapper();
+    private ObjectMapper om = new ObjectMapper();
 
     @Before("before")
     public void setUp(){
@@ -53,8 +53,8 @@ public class AuthControllerIntegrationTest {
     @DisplayName("authenticateUser method, response entity ok")
     public void testLogin() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("email@email.com");
-        loginRequest.setPassword("password");
+        loginRequest.setEmail("yoga@studio.com");
+        loginRequest.setPassword("test!1234");
         String jsonRequest = om.writeValueAsString(loginRequest);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login").contentType(APPLICATION_JSON).content(jsonRequest)).andExpect(status().isOk()).andReturn();
     }
