@@ -7,4 +7,3 @@ For launch and generate the jacoco code coverage:
 
 Launch integration test:
 > mvn -Dtest=*your_integration_file* test
-GL
