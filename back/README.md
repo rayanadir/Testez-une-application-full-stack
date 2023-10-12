@@ -6,5 +6,5 @@ For launch and generate the jacoco code coverage:
 > mvn jacoco report
 
 Launch integration test:
-> mvn -Dtest=TeacherControllerIntegrationTest test
+> mvn -Dtest=*your_integration_file* test
 GL
