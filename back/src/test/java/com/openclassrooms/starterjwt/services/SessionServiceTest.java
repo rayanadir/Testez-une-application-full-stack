@@ -43,7 +43,7 @@ public class SessionServiceTest {
 
     @Test
     @DisplayName("create method")
-    void create(){
+    void whenValidSessionRequest_thenCreateSession(){
         Teacher teacher = new Teacher();
         teacher.setId(12346789L);
         teacher.setLastName("Lastname");
